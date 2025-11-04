@@ -82,7 +82,7 @@ AI info github/
 
 ## 🔗 Links & Resources
 
-- **Repository**: [https://va.ghe.com/software/ai-information-primer](https://va.ghe.com/software/ai-information-primer)
+- **Repository**: [https://github.com/cyber3pxVA/ai-information-primer](https://github.com/cyber3pxVA/ai-information-primer)
 - **Department of Veterans Affairs**: Official VA AI education initiative
 
 ## 🤝 Contributing
