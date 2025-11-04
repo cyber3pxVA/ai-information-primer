@@ -1,7 +1,7 @@
 {
   "name": "va-ai-education-hub",
   "version": "1.0.0",
-  "description": "Static website for AI education and research materials - Department of Veterans Affairs",
+  "description": "Static website for AI education and research materials - Specialty Care Medicine",
   "main": "index.html",
   "scripts": {
     "serve": "python -m http.server 8000",
@@ -18,7 +18,7 @@
     "ai",
     "artificial-intelligence",
     "education",
-    "veterans-affairs",
+    "healthcare-system",
     "research",
     "llm",
     "transformers",
@@ -26,7 +26,7 @@
     "static-website",
     "pdf-library"
   ],
-  "author": "Department of Veterans Affairs - AI Education Team",
+  "author": "Specialty Care Medicine - AI Education Team",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {

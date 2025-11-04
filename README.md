@@ -1,6 +1,6 @@
 # AI Education Hub
 
-A comprehensive static website for posting PDF files related to AI education and information for the Department of Veterans Affairs.
+A comprehensive static website for posting PDF files related to AI education and information for Specialty Care Medicine - New England Healthcare System.
 
 ## 🚀 Features
 
@@ -87,9 +87,9 @@ AI info github/
 
 ## 🤝 Contributing
 
-This website is part of the Department of Veterans Affairs AI education initiative. To contribute:
+This website is part of the Specialty Care Medicine AI education initiative. To contribute:
 
-1. Follow VA development guidelines
+1. Follow healthcare system development guidelines
 2. Ensure all content is appropriate for educational use
 3. Maintain accessibility standards
 4. Test across different devices and browsers
@@ -115,12 +115,12 @@ This website is part of the Department of Veterans Affairs AI education initiati
 
 ## 📄 License
 
-This project is developed for the Department of Veterans Affairs and follows VA software development guidelines.
+This project is developed for Specialty Care Medicine and follows healthcare system software development guidelines.
 
 ## 📞 Support
 
-For technical support or questions about the AI education resources, contact the VA AI development team.
+For technical support or questions about the AI education resources, contact the healthcare system AI development team.
 
 ---
 
-**Built with ❤️ for AI Education at the Department of Veterans Affairs**
+**Built with ❤️ for AI Education at Specialty Care Medicine - New England Healthcare System**
