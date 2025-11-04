@@ -119,52 +119,248 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Search functionality for articles
+// Enhanced keyword search functionality for articles
 function setupSearch() {
+    const searchContainer = document.createElement('div');
+    searchContainer.className = 'search-container';
+    searchContainer.style.cssText = `
+        max-width: 500px;
+        margin: 2rem auto;
+        position: relative;
+    `;
+    
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
-    searchInput.placeholder = 'Search articles...';
+    searchInput.placeholder = 'Search articles by keywords (e.g., "transformer", "GPT", "attention", "fine-tuning")...';
+    searchInput.className = 'search-input';
     searchInput.style.cssText = `
         width: 100%;
-        max-width: 400px;
-        padding: 12px 20px;
+        padding: 12px 45px 12px 20px;
         border: 2px solid #e2e8f0;
         border-radius: 25px;
         font-size: 1rem;
-        margin: 2rem auto;
-        display: block;
-        transition: border-color 0.3s ease;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     `;
+    
+    const searchIcon = document.createElement('i');
+    searchIcon.className = 'fas fa-search';
+    searchIcon.style.cssText = `
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        pointer-events: none;
+    `;
+    
+    const clearButton = document.createElement('button');
+    clearButton.innerHTML = '<i class="fas fa-times"></i>';
+    clearButton.className = 'clear-search';
+    clearButton.style.cssText = `
+        position: absolute;
+        right: 45px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #64748b;
+        cursor: pointer;
+        display: none;
+        font-size: 14px;
+        padding: 5px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    `;
+    
+    const resultsCounter = document.createElement('div');
+    resultsCounter.className = 'search-results';
+    resultsCounter.style.cssText = `
+        text-align: center;
+        margin-top: 1rem;
+        color: #64748b;
+        font-size: 0.9rem;
+        display: none;
+    `;
+    
+    // Popular search suggestions
+    const suggestionsContainer = document.createElement('div');
+    suggestionsContainer.className = 'search-suggestions';
+    suggestionsContainer.innerHTML = `
+        <small style="color: #64748b; margin-right: 1rem;">Popular topics:</small>
+    `;
+    
+    const popularKeywords = [
+        'transformer', 'GPT', 'attention', 'fine-tuning', 'BERT', 
+        'agents', 'LLM', 'training', 'quantization', 'retrieval'
+    ];
+    
+    popularKeywords.forEach(keyword => {
+        const suggestion = document.createElement('span');
+        suggestion.className = 'search-suggestion';
+        suggestion.textContent = keyword;
+        suggestion.addEventListener('click', () => {
+            searchInput.value = keyword;
+            searchInput.dispatchEvent(new Event('input'));
+            searchInput.focus();
+        });
+        suggestionsContainer.appendChild(suggestion);
+    });
+    
+    searchContainer.appendChild(searchInput);
+    searchContainer.appendChild(searchIcon);
+    searchContainer.appendChild(clearButton);
+    searchContainer.appendChild(resultsCounter);
+    searchContainer.appendChild(suggestionsContainer);
     
     const articlesSection = document.querySelector('.articles-section .container');
     const sectionSubtitle = articlesSection.querySelector('.section-subtitle');
-    sectionSubtitle.after(searchInput);
+    sectionSubtitle.after(searchContainer);
     
+    // Enhanced search with multiple keywords and highlighting
     searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
+        const searchTerm = e.target.value.toLowerCase().trim();
         const articles = document.querySelectorAll('.article-card');
+        let visibleCount = 0;
+        
+        // Show/hide clear button
+        if (searchTerm) {
+            clearButton.style.display = 'block';
+        } else {
+            clearButton.style.display = 'none';
+        }
+        
+        if (searchTerm === '') {
+            articles.forEach(article => {
+                article.style.display = 'block';
+                article.style.opacity = '1';
+                // Remove any existing highlights
+                removeHighlights(article);
+            });
+            resultsCounter.style.display = 'none';
+            return;
+        }
+        
+        // Split search terms by spaces and commas
+        const keywords = searchTerm.split(/[\s,]+/).filter(word => word.length > 1);
         
         articles.forEach(article => {
             const title = article.querySelector('h3').textContent.toLowerCase();
             const overview = article.querySelector('.article-overview').textContent.toLowerCase();
             const insights = article.querySelector('.article-insights').textContent.toLowerCase();
+            const fullText = `${title} ${overview} ${insights}`;
             
-            if (title.includes(searchTerm) || overview.includes(searchTerm) || insights.includes(searchTerm)) {
+            // Check if any keyword matches
+            const matches = keywords.some(keyword => 
+                fullText.includes(keyword) || 
+                fuzzyMatch(keyword, fullText)
+            );
+            
+            if (matches) {
                 article.style.display = 'block';
                 article.style.opacity = '1';
+                article.style.order = '0';
+                
+                // Highlight matching terms
+                highlightKeywords(article, keywords);
+                visibleCount++;
             } else {
                 article.style.display = 'none';
+                removeHighlights(article);
             }
+        });
+        
+        // Show results counter
+        resultsCounter.style.display = 'block';
+        resultsCounter.textContent = `Found ${visibleCount} article${visibleCount !== 1 ? 's' : ''} matching "${searchTerm}"`;
+        
+        if (visibleCount === 0) {
+            resultsCounter.innerHTML = `
+                <div style="color: #ef4444;">
+                    No articles found for "${searchTerm}"
+                    <br><small>Try keywords like: transformer, GPT, attention, fine-tuning, BERT, training</small>
+                </div>
+            `;
+        }
+    });
+    
+    // Clear search functionality
+    clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        clearButton.style.display = 'none';
+        resultsCounter.style.display = 'none';
+        
+        const articles = document.querySelectorAll('.article-card');
+        articles.forEach(article => {
+            article.style.display = 'block';
+            article.style.opacity = '1';
+            removeHighlights(article);
         });
     });
     
+    // Enhanced focus/blur effects
     searchInput.addEventListener('focus', () => {
         searchInput.style.borderColor = '#2563eb';
+        searchInput.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
     });
     
     searchInput.addEventListener('blur', () => {
         searchInput.style.borderColor = '#e2e8f0';
+        searchInput.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
     });
+}
+
+// Fuzzy matching for better search results
+function fuzzyMatch(keyword, text) {
+    // Simple fuzzy matching - allows for minor typos
+    if (keyword.length < 3) return false;
+    
+    const variations = [
+        keyword,
+        keyword.replace(/er$/, 'ing'), // transformer -> transforming
+        keyword.replace(/ing$/, 'er'), // training -> trainer
+        keyword.replace(/s$/, ''),     // models -> model
+        keyword + 's'                  // model -> models
+    ];
+    
+    return variations.some(variation => text.includes(variation));
+}
+
+// Highlight matching keywords in search results
+function highlightKeywords(article, keywords) {
+    removeHighlights(article); // Remove existing highlights first
+    
+    const elementsToSearch = [
+        article.querySelector('h3'),
+        article.querySelector('.article-overview'),
+        ...article.querySelectorAll('.article-insights li')
+    ];
+    
+    elementsToSearch.forEach(element => {
+        if (!element) return;
+        
+        let html = element.innerHTML;
+        keywords.forEach(keyword => {
+            if (keyword.length > 1) {
+                const regex = new RegExp(`(${escapeRegex(keyword)})`, 'gi');
+                html = html.replace(regex, '<mark style="background: #fef08a; padding: 2px 4px; border-radius: 3px; font-weight: 600;">$1</mark>');
+            }
+        });
+        element.innerHTML = html;
+    });
+}
+
+// Remove highlights from article
+function removeHighlights(article) {
+    const marks = article.querySelectorAll('mark');
+    marks.forEach(mark => {
+        mark.outerHTML = mark.innerHTML;
+    });
+}
+
+// Escape special regex characters
+function escapeRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // Initialize search after DOM is loaded
