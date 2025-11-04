@@ -39,59 +39,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// PDF Upload functionality
-document.getElementById('pdfUpload').addEventListener('change', function(e) {
-    const files = Array.from(e.target.files);
-    const resourcesGrid = document.getElementById('resourcesGrid');
-    
-    files.forEach(file => {
-        if (file.type === 'application/pdf') {
-            const resourceItem = createResourceItem(file);
-            resourcesGrid.appendChild(resourceItem);
-        }
-    });
-});
-
-function createResourceItem(file) {
-    const item = document.createElement('div');
-    item.className = 'resource-item';
-    
-    const fileSize = (file.size / 1024 / 1024).toFixed(2); // Convert to MB
-    const uploadDate = new Date().toLocaleDateString();
-    
-    item.innerHTML = `
-        <div class="resource-icon">
-            <i class="fas fa-file-pdf" style="color: #dc2626; font-size: 2rem;"></i>
-        </div>
-        <h4 style="margin: 1rem 0 0.5rem 0; color: #1e293b;">${file.name}</h4>
-        <div class="resource-meta" style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">
-            <div><i class="fas fa-hdd"></i> ${fileSize} MB</div>
-            <div><i class="fas fa-calendar"></i> ${uploadDate}</div>
-        </div>
-        <div class="resource-actions">
-            <button onclick="downloadFile('${file.name}')" class="btn-download">
-                <i class="fas fa-download"></i> Download
-            </button>
-            <button onclick="previewFile('${file.name}')" class="btn" style="background: #f3f4f6; color: #374151; margin-left: 0.5rem;">
-                <i class="fas fa-eye"></i> Preview
-            </button>
-        </div>
-    `;
-    
-    return item;
-}
-
-function downloadFile(filename) {
-    // In a real implementation, this would download the file
-    console.log('Downloading file:', filename);
-    alert('Download functionality would be implemented here.');
-}
-
-function previewFile(filename) {
-    // In a real implementation, this would open a PDF viewer
-    console.log('Previewing file:', filename);
-    alert('PDF preview functionality would be implemented here.');
-}
+// PDF upload functionality removed - all PDFs are directly linked in articles section
 
 // Animation on scroll
 const observerOptions = {
