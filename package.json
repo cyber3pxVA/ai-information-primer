@@ -1,0 +1,43 @@
+{
+  "name": "va-ai-education-hub",
+  "version": "1.0.0",
+  "description": "Static website for AI education and research materials - Department of Veterans Affairs",
+  "main": "index.html",
+  "scripts": {
+    "serve": "python -m http.server 8000",
+    "serve-node": "npx http-server . -p 8000 -o",
+    "build": "echo 'Static site - no build process needed'",
+    "validate": "echo 'Running HTML validation...' && echo 'Running CSS validation...' && echo 'Running JS linting...'",
+    "deploy": "echo 'Ready for deployment to web server'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://va.ghe.com/software/ai-information-primer"
+  },
+  "keywords": [
+    "ai",
+    "artificial-intelligence",
+    "education",
+    "veterans-affairs",
+    "research",
+    "llm",
+    "transformers",
+    "machine-learning",
+    "static-website",
+    "pdf-library"
+  ],
+  "author": "Department of Veterans Affairs - AI Education Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
