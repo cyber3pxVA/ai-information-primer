@@ -717,3 +717,81 @@ mark {
 ::-webkit-scrollbar-thumb:hover {
     background: #1d4ed8;
 }
+/* PDF Library Styles */
+.pdf-library-section {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+}
+
+.pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.pdf-table thead {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+}
+
+.pdf-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.pdf-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.pdf-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.pdf-table a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.pdf-table a:hover {
+    text-decoration: underline;
+}
+
+#pdf-upload-area {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#pdf-upload-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#pdf-upload-form input[type="file"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem;
+}
+
+#pdf-upload-form input[type="text"],
+#pdf-upload-form select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#pdf-upload-form button {
+    padding: 0.75rem 2rem;
+}

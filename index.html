@@ -17,8 +17,8 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#articles" class="nav-link">Research Articles</a></li>
-                <li><a href="#resources" class="nav-link">Downloads</a></li>
+                <li><a href="primer.html" class="nav-link">Primer</a></li>
+                <li><a href="#pdf-library" class="nav-link">PDF Library</a></li>
                 <li><a href="#repository" class="nav-link">Repository</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
@@ -342,8 +342,8 @@
                 </div>
                 <div class="footer-links">
                     <a href="#home">Home</a>
-                    <a href="#articles">Articles</a>
-                    <a href="#resources">Downloads</a>
+                    <a href="primer.html">Primer</a>
+                    <a href="#pdf-library">PDF Library</a>
                     <a href="https://github.com/cyber3pxVA/ai-information-primer" target="_blank">Repository</a>
                 </div>
                 <div class="footer-info">
@@ -352,6 +352,112 @@
             </div>
         </div>
     </footer>
+
+    <!-- PDF Library Section -->
+    <section id="pdf-library" class="pdf-library-section">
+        <div class="container">
+            <h2 class="section-title">PDF Library</h2>
+            <p class="section-subtitle">Browse, upload, and explore categorized AI research papers.</p>
+            <div id="pdf-upload-area" style="margin-bottom:2rem;">
+                <form id="pdf-upload-form">
+                    <input type="file" id="pdf-upload-input" accept="application/pdf" multiple style="margin-bottom:1rem;">
+                    <input type="text" id="pdf-title-input" placeholder="Title (optional)" style="margin-right:1rem;">
+                    <select id="pdf-category-input">
+                        <option value="">Select Category</option>
+                        <option value="LLM Agents">LLM Agents</option>
+                        <option value="Distillation">Distillation</option>
+                        <option value="Transformers">Transformers</option>
+                        <option value="RLHF">RLHF</option>
+                        <option value="Quantization">Quantization</option>
+                        <option value="Retrieval">Retrieval</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Upload PDF</button>
+                </form>
+                <div id="pdf-upload-message" style="margin-top:1rem;color:#2563eb;"></div>
+            </div>
+            <div id="pdf-library-table-container"></div>
+        </div>
+    </section>
+    <script src="pdf_library.js"></script>
+    <script>
+    // Load library from server
+    async function loadLibrary() {
+        try {
+            const response = await fetch('http://localhost:3000/api/library');
+            const data = await response.json();
+            window.pdfLibrary = data;
+            renderPdfLibraryTable();
+        } catch (error) {
+            console.error('Failed to load library:', error);
+            // Fallback to static data if server not available
+            renderPdfLibraryTable();
+        }
+    }
+    
+    // Render PDF library table
+    function renderPdfLibraryTable() {
+        const container = document.getElementById('pdf-library-table-container');
+        if (!container) return;
+        const library = window.pdfLibrary || [];
+        let html = `<table class='pdf-table'><thead><tr><th>Title</th><th>Category</th><th>Summary</th><th>Date</th><th>Download</th></tr></thead><tbody>`;
+        library.forEach(pdf => {
+            html += `<tr><td>${pdf.title}</td><td>${pdf.category}</td><td>${pdf.summary}</td><td>${pdf.date}</td><td><a href='pdfs/${pdf.filename}' target='_blank'>Download</a></td></tr>`;
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+    
+    loadLibrary();
+    
+    // Upload handler (now with real backend)
+    document.getElementById('pdf-upload-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const fileInput = document.getElementById('pdf-upload-input');
+        const titleInput = document.getElementById('pdf-title-input');
+        const categoryInput = document.getElementById('pdf-category-input');
+        const messageDiv = document.getElementById('pdf-upload-message');
+        
+        if (!fileInput.files.length) {
+            messageDiv.textContent = 'Please select a PDF file.';
+            messageDiv.style.color = '#ef4444';
+            return;
+        }
+        
+        for (const file of fileInput.files) {
+            const formData = new FormData();
+            formData.append('pdf', file);
+            formData.append('title', titleInput.value || file.name.replace(/\.pdf$/i, ''));
+            formData.append('category', categoryInput.value || 'Other');
+            formData.append('summary', 'Auto-summary: ' + (titleInput.value || file.name).split(' ').slice(0,5).join(' ') + '...');
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.textContent = `✓ ${file.name} uploaded successfully!`;
+                    messageDiv.style.color = '#10b981';
+                    await loadLibrary(); // Reload table
+                } else {
+                    messageDiv.textContent = `✗ ${result.error}`;
+                    messageDiv.style.color = '#ef4444';
+                }
+            } catch (error) {
+                messageDiv.textContent = '✗ Upload failed. Make sure server is running (npm start).';
+                messageDiv.style.color = '#ef4444';
+            }
+        }
+        
+        fileInput.value = '';
+        titleInput.value = '';
+        categoryInput.value = '';
+    });
+    </script>
 
     <script src="script.js"></script>
 </body>
